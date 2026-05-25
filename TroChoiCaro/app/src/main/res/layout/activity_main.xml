@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1A0A00">
+
+    <!--header-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
+        android:background="#2D1200">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="♟  TRÒ CHƠI CỜ CARO"
+            android:textColor="#F5C842"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:letterSpacing="0.08"
+            android:fontFamily="sans-serif-condensed"/>
+
+        <TextView
+            android:id="@+id/tvScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚫ 0  —  0 ⚪"
+            android:textColor="#D4B896"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:paddingBottom="2dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="Lượt: ⚫ Đen"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:background="#3D1E00"/>
+
+    <!--ban co-->
+    <hoang.nguyennhathoang.trochoicaro.GameView
+        android:id="@+id/gameView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="2dp"/>
+
+    <!--nut bam-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="14dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="16dp"
+        android:gravity="center"
+        android:background="#2D1200">
+
+        <Button
+            android:id="@+id/btnToggleMode"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="👥  2 Người"
+            android:textSize="14sp"
+            android:backgroundTint="#5C3010"
+            android:textColor="#FFE0A0"
+            android:stateListAnimator="@null"/>
+
+        <Button
+            android:id="@+id/btnNewGame"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="🔄  Ván Mới"
+            android:textSize="14sp"
+            android:backgroundTint="#8B3A00"
+            android:textColor="#FFE0A0"
+            android:stateListAnimator="@null"/>
+
+    </LinearLayout>
+
+</LinearLayout>
