@@ -18,25 +18,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameView extends View {
-
+    // ban co 15x15
     private static final int BOARD_SIZE = 15;
-
     private int[][] board;
-    private int currentPlayer = 1;
+    private int currentPlayer = 1; // khai bao nguoi choi
     private boolean gameOver = false;
-    private boolean aiMode = false;
-    private int[] scores = {0, 0};
+    private boolean aiMode = false; // che do choi
+    private int[] scores = {0, 0}; // diem so
     private int[] lastMove = null;
     private int[][] winLine = null;
 
-    private Paint boardPaint, linePaint, starPaint;
-    private Paint shadowPaint, highlightPaint, winLinePaint;
-    private Paint coordPaint, borderPaint;
+    private Paint boardPaint, linePaint, starPaint; // ve ban co
+    private Paint shadowPaint, highlightPaint, winLinePaint; // ve cac diem dac biet
+    private Paint coordPaint, borderPaint; // ve ria ban co
 
     private float cellSize;
     private float offsetX, offsetY;
-
+    // khai bao trang thai tro choi: luot choi, ket qua
     public interface StatusCallback { void onStatus(String s); }
+    // khai bao diem so
     public interface ScoreCallback  { void onScore(String s);  }
 
     private StatusCallback statusCallback;
@@ -58,70 +58,68 @@ public class GameView extends View {
     }
 
     private void init() {
+        // khoi tao ban co
         board = new int[BOARD_SIZE][BOARD_SIZE];
-
+        // nen ban co
         boardPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
+        // vien o co
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         linePaint.setColor(Color.parseColor("#7A4A1E"));
         linePaint.setStrokeWidth(1.5f);
         linePaint.setStyle(Paint.Style.STROKE);
-
+        // diem quan co
         starPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         starPaint.setColor(Color.parseColor("#5C3010"));
         starPaint.setStyle(Paint.Style.FILL);
-
+        // bong quan co
         shadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         shadowPaint.setColor(Color.parseColor("#55000000"));
         shadowPaint.setStyle(Paint.Style.FILL);
-
+        // highlight nuoc di cuoi cung
         highlightPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         highlightPaint.setColor(Color.parseColor("#FFDD00"));
         highlightPaint.setStyle(Paint.Style.STROKE);
         highlightPaint.setStrokeWidth(3.5f);
-
+        // duong chien thang
         winLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         winLinePaint.setColor(Color.parseColor("#FF3333"));
         winLinePaint.setStyle(Paint.Style.STROKE);
         winLinePaint.setStrokeWidth(6f);
         winLinePaint.setStrokeCap(Paint.Cap.ROUND);
-
+        // toa do ria ban co
         coordPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         coordPaint.setColor(Color.parseColor("#8B5E3C"));
         coordPaint.setTextAlign(Paint.Align.CENTER);
-
+        // vien ngoai ban co
         borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         borderPaint.setColor(Color.parseColor("#7A4A1E"));
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(3f);
     }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
         float padding = Math.min(w, h) * 0.065f;
-
         cellSize  = (Math.min(w, h) - 2f * padding) / (BOARD_SIZE - 1);
+        // canh giua ban co
         offsetX   = (w - cellSize * (BOARD_SIZE - 1)) / 2f;
         offsetY   = (h - cellSize * (BOARD_SIZE - 1)) / 2f;
-
+        // chieu rong o co
         coordPaint.setTextSize(cellSize * 0.28f);
     }
-
+    // khai bao ham ve ban co
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        drawBoard(canvas);
-        drawGrid(canvas);
-        drawStarPoints(canvas);
-        drawCoords(canvas);
-        drawStones(canvas);
-
+        drawBoard(canvas); // nen ban co
+        drawGrid(canvas); // vien o co
+        drawStarPoints(canvas); // diem sao
+        drawCoords(canvas); // toa do
+        drawStones(canvas); // quan co
+        // neu chien thang, sẽ vẽ đường thang len o co chien thang
         if (winLine != null) drawWinLine(canvas);
     }
-
+    // khai bao ham ve nen ban co
     private void drawBoard(Canvas canvas) {
         float pad = cellSize * 0.65f;
 
@@ -131,10 +129,8 @@ public class GameView extends View {
                 offsetX + (BOARD_SIZE - 1) * cellSize + pad,
                 offsetY + (BOARD_SIZE - 1) * cellSize + pad
         );
-
         Paint outerShadow = new Paint(Paint.ANTI_ALIAS_FLAG);
         outerShadow.setColor(Color.parseColor("#66000000"));
-
         canvas.drawRoundRect(
                 new RectF(
                         rect.left + 8,
@@ -146,7 +142,6 @@ public class GameView extends View {
                 18,
                 outerShadow
         );
-
         LinearGradient grad = new LinearGradient(
                 rect.left,
                 rect.top,
@@ -156,22 +151,18 @@ public class GameView extends View {
                 Color.parseColor("#B8692E"),
                 Shader.TileMode.CLAMP
         );
-
         boardPaint.setShader(grad);
-
         canvas.drawRoundRect(rect, 18, 18, boardPaint);
-
         boardPaint.setShader(null);
-
+        // vien ngoai ban co
         canvas.drawRoundRect(rect, 18, 18, borderPaint);
     }
-
+    // goi ham ve luoi ban co
     private void drawGrid(Canvas canvas) {
         for (int i = 0; i < BOARD_SIZE; i++) {
-
-            float x = offsetX + i * cellSize;
-            float y = offsetY + i * cellSize;
-
+            float x = offsetX + i * cellSize; // toa do cot i
+            float y = offsetY + i * cellSize; // toa do hang i
+            // duong ke ngang
             canvas.drawLine(
                     offsetX,
                     y,
@@ -179,7 +170,7 @@ public class GameView extends View {
                     y,
                     linePaint
             );
-
+            // duong ke doc
             canvas.drawLine(
                     x,
                     offsetY,
@@ -189,7 +180,6 @@ public class GameView extends View {
             );
         }
     }
-
     private void drawStarPoints(Canvas canvas) {
         int[] pts = {3, 7, 11};
 
@@ -202,60 +192,50 @@ public class GameView extends View {
                         starPaint
                 );
     }
-
+    // goi ham ve ki tu toa do ban co
     private void drawCoords(Canvas canvas) {
+        // ki tu theo cot
         String cols = "ABCDEFGHJKLMNOP";
-
+        // can doc
         float textH = coordPaint.getTextSize();
-
         for (int i = 0; i < BOARD_SIZE; i++) {
-
-            float x = offsetX + i * cellSize;
-            float y = offsetY + i * cellSize;
-
+            float x = offsetX + i * cellSize; // toa do x cot i
+            float y = offsetY + i * cellSize; // toa do y hang i
             canvas.drawText(
                     String.valueOf(cols.charAt(i)),
                     x,
-                    offsetY - cellSize * 0.38f,
+                    offsetY - cellSize * 0.38f, // ki tu cach 0,38 o so voi hang
                     coordPaint
             );
-
             canvas.drawText(
                     String.valueOf(BOARD_SIZE - i),
-                    offsetX - cellSize * 0.48f,
-                    y + textH * 0.35f,
+                    offsetX - cellSize * 0.48f, // ki tu lui sang trai 0,48 o
+                    y + textH * 0.35f, // can giua
                     coordPaint
             );
         }
     }
-
+    // ham duyet ban co
     private void drawStones(Canvas canvas) {
         for (int r = 0; r < BOARD_SIZE; r++)
             for (int c = 0; c < BOARD_SIZE; c++)
                 if (board[r][c] != 0)
                     drawStone(canvas, r, c, board[r][c]);
     }
-
+    // ham ve quan co
     private void drawStone(Canvas canvas, int row, int col, int player) {
-
         float cx = offsetX + col * cellSize;
         float cy = offsetY + row * cellSize;
-
         float radius = cellSize * 0.44f;
-
         canvas.drawCircle(
                 cx + radius * 0.13f,
                 cy + radius * 0.18f,
                 radius,
                 shadowPaint
         );
-
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
         paint.setStyle(Paint.Style.FILL);
-
         if (player == 1) {
-
             RadialGradient g = new RadialGradient(
                     cx - radius * 0.3f,
                     cy - radius * 0.3f,
@@ -264,11 +244,8 @@ public class GameView extends View {
                     Color.parseColor("#0D0D0D"),
                     Shader.TileMode.CLAMP
             );
-
             paint.setShader(g);
-
         } else {
-
             RadialGradient g = new RadialGradient(
                     cx - radius * 0.3f,
                     cy - radius * 0.35f,
@@ -277,42 +254,30 @@ public class GameView extends View {
                     Color.parseColor("#C0C0C0"),
                     Shader.TileMode.CLAMP
             );
-
             paint.setShader(g);
         }
-
         canvas.drawCircle(cx, cy, radius, paint);
-
         if (player == 2) {
-
             Paint outline = new Paint(Paint.ANTI_ALIAS_FLAG);
-
             outline.setColor(Color.parseColor("#AAAAAA"));
             outline.setStyle(Paint.Style.STROKE);
             outline.setStrokeWidth(1.2f);
-
             canvas.drawCircle(cx, cy, radius, outline);
         }
-
         Paint shine = new Paint(Paint.ANTI_ALIAS_FLAG);
-
         shine.setStyle(Paint.Style.FILL);
-
         shine.setColor(
                 Color.argb(player == 1 ? 55 : 170, 255, 255, 255)
         );
-
         canvas.drawCircle(
                 cx - radius * 0.28f,
                 cy - radius * 0.28f,
                 radius * 0.28f,
                 shine
         );
-
         if (lastMove != null &&
                 lastMove[0] == row &&
                 lastMove[1] == col) {
-
             canvas.drawCircle(
                     cx,
                     cy,
@@ -321,20 +286,14 @@ public class GameView extends View {
             );
         }
     }
-
     private void drawWinLine(Canvas canvas) {
-
         if (winLine == null || winLine.length < 2) return;
-
         float x1 = offsetX + winLine[0][1] * cellSize;
         float y1 = offsetY + winLine[0][0] * cellSize;
-
         float x2 = offsetX + winLine[winLine.length - 1][1] * cellSize;
         float y2 = offsetY + winLine[winLine.length - 1][0] * cellSize;
-
         canvas.drawLine(x1, y1, x2, y2, winLinePaint);
     }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
