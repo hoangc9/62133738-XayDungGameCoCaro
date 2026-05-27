@@ -286,98 +286,82 @@ public class GameView extends View {
             );
         }
     }
+    // ham ve duong chien thang
     private void drawWinLine(Canvas canvas) {
-        if (winLine == null || winLine.length < 2) return;
+        if (winLine == null || winLine.length < 2) return; // kiem tra du lieu thang
+        // tinh toa doa diem dau
         float x1 = offsetX + winLine[0][1] * cellSize;
         float y1 = offsetY + winLine[0][0] * cellSize;
+        // tinh toa do diem cuoi
         float x2 = offsetX + winLine[winLine.length - 1][1] * cellSize;
         float y2 = offsetY + winLine[winLine.length - 1][0] * cellSize;
+        // ve duong chien thang
         canvas.drawLine(x1, y1, x2, y2, winLinePaint);
     }
     @Override
+    // ham xu ly cham man hinh
     public boolean onTouchEvent(MotionEvent event) {
-
-        if (event.getAction() != MotionEvent.ACTION_UP) return true;
-
+        // lay hanh dong cham
+        if (event.getAction() != MotionEvent.ACTION_UP) return true; // nhac tay ra khoi man hinh
+        // kiem tra game da ket thuc chua, neu ket thuc thi khong cho danh nua
         if (gameOver) return true;
-
+        // kiem tra co dang choi voi may khong
         if (aiMode && currentPlayer == 2) return true;
-
         int col = Math.round((event.getX() - offsetX) / cellSize);
         int row = Math.round((event.getY() - offsetY) / cellSize);
-
         if (row < 0 || row >= BOARD_SIZE ||
                 col < 0 || col >= BOARD_SIZE) return true;
-
         if (board[row][col] != 0) return true;
-
         placeStone(row, col);
-
         if (aiMode && !gameOver) {
-
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
                 int[] move = aiMove();
-
+                // goi ham AI
                 if (move != null)
                     placeStone(move[0], move[1]);
 
             }, 280);
         }
-
         return true;
     }
-
+    // ham dat quan co len ban co
     private void placeStone(int row, int col) {
-
+        // gan quan co vao ban co
         board[row][col] = currentPlayer;
-
+        // luu nuoc di cuoi cung
         lastMove = new int[]{row, col};
-
+        // goi ham ham kiem tra win
         int[][] wl = checkWinLine(row, col);
-
         if (wl != null) {
-
             winLine = wl;
-
             gameOver = true;
-
             scores[currentPlayer - 1]++;
-
             String winner =
                     (currentPlayer == 1)
                             ? "⚫ Đen"
                             : "⚪ Trắng";
-
+            // hien thi nguoi chien thang
             emitStatus(winner + " thắng! 🎉");
-
             emitScore(
                     "⚫ " + scores[0] +
                             "  —  " +
                             scores[1] + " ⚪"
             );
-
+        // neu khong thang thi kiem tra hoa
         } else if (isBoardFull()) {
-
             gameOver = true;
-
             emitStatus("Hòa! 🤝");
-
         } else {
-
             currentPlayer = 3 - currentPlayer;
-
             String next =
                     (currentPlayer == 1)
                             ? "⚫ Đen"
                             : "⚪ Trắng";
-
             emitStatus("Lượt: " + next);
         }
-
         invalidate();
     }
-
+    // ham kiem tra nuoc di cuoi co chien thanh hay khong
     private int[][] checkWinLine(int row, int col) {
 
         int player = board[row][col];
