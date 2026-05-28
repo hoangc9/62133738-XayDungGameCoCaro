@@ -405,13 +405,12 @@ public class GameView extends View {
 
         return null;
     }
-
+    // ham kiem tra duong thang
     private boolean checkWin(int r, int c) {
         return checkWinLine(r, c) != null;
     }
-
+    // kiem tra ban co da day hay chua
     private boolean isBoardFull() {
-
         for (int r = 0; r < BOARD_SIZE; r++)
             for (int c = 0; c < BOARD_SIZE; c++)
                 if (board[r][c] == 0)
@@ -419,45 +418,39 @@ public class GameView extends View {
 
         return true;
     }
-
+    // ham khai bao nuoc di cua AI
     private int[] aiMove() {
-
+        // duyet tat ca cac o trong ban co da danh hay chua
         for (int r = 0; r < BOARD_SIZE; r++)
             for (int c = 0; c < BOARD_SIZE; c++)
+                // neu chua thi xem xet nuoc di
                 if (board[r][c] == 0) {
-
                     board[r][c] = 2;
-
+                    // kiem tra neu AI danh vao day thi co thang hay ko
                     boolean w = checkWin(r, c);
-
                     board[r][c] = 0;
-
+                    // neu nuoc di nay thang thi AI se di nuoc di nay
                     if (w)
                         return new int[]{r, c};
                 }
-
+        // chan nguoi choi win
         for (int r = 0; r < BOARD_SIZE; r++)
             for (int c = 0; c < BOARD_SIZE; c++)
                 if (board[r][c] == 0) {
-
                     board[r][c] = 1;
-
+                    // kiem tra neu nguoi choi danh vao day thi co thang hay khong
                     boolean w = checkWin(r, c);
-
+                    // hoan tac lai ban co
                     board[r][c] = 0;
-
+                    // neu nuoc di nay la chien thang thi AI se di nuoc di nay
                     if (w)
                         return new int[]{r, c};
                 }
-
         int best = -1;
-
         int[] bestMove = null;
-
         for (int r = 0; r < BOARD_SIZE; r++)
             for (int c = 0; c < BOARD_SIZE; c++)
                 if (board[r][c] == 0) {
-
                     int score =
                             scoreCell(r, c, 2) * 2
                                     + scoreCell(r, c, 1)
@@ -465,108 +458,77 @@ public class GameView extends View {
                                     0,
                                     10 - Math.abs(r - 7) - Math.abs(c - 7)
                             );
-
                     if (score > best) {
-
                         best = score;
-
                         bestMove = new int[]{r, c};
                     }
                 }
-
         return bestMove;
     }
-
+    // ham AI tinh diem nuoc di cho ban co, danh gia nuoc di can thuc hien
     private int scoreCell(int row, int col, int player) {
-
         board[row][col] = player;
-
         int score = 0;
-
         int[][] dirs = {
                 {0, 1},
                 {1, 0},
                 {1, 1},
                 {1, -1}
         };
-
         for (int[] d : dirs) {
-
             int cnt = 1;
-
             for (int s : new int[]{1, -1})
-
                 for (int i = 1; i <= 4; i++) {
-
                     int r = row + s * d[0] * i;
                     int c = col + s * d[1] * i;
-
+                    // kiem tra bien ban co
                     if (r < 0 || r >= BOARD_SIZE ||
                             c < 0 || c >= BOARD_SIZE) break;
-
                     if (board[r][c] != player) break;
-
                     cnt++;
                 }
-
             score += cnt * cnt;
         }
-
         board[row][col] = 0;
-
         return score;
     }
-
+    // ham tao lai van co moi
     public void newGame() {
-
         board = new int[BOARD_SIZE][BOARD_SIZE];
-
         currentPlayer = 1;
-
         gameOver = false;
-
         lastMove = null;
-
         winLine = null;
-
         emitStatus("Lượt: ⚫ Đen");
-
         invalidate();
     }
-
+    // ham chuyen che do choi
     public void toggleMode() {
-
         aiMode = !aiMode;
-
         newGame();
     }
-
+    // ham kiem tra co bat AI hay khong
     public boolean isAiMode() {
         return aiMode;
     }
 
     public void setStatusCallback(StatusCallback cb) {
-
         statusCallback = cb;
-
         cb.onStatus("Lượt: ⚫ Đen");
     }
-
+    // ham cap nhat ti so
     public void setScoreCallback(ScoreCallback cb) {
-
         scoreCallback = cb;
-
         cb.onScore("⚫ 0  —  0 ⚪");
     }
-
+    // ham hien thi trang thai
     private void emitStatus(String s) {
 
         if (statusCallback != null)
             statusCallback.onStatus(s);
     }
-
+    // ham gui diem so
     private void emitScore(String s) {
-
         if (scoreCallback != null)
             scoreCallback.onScore(s);
     }
