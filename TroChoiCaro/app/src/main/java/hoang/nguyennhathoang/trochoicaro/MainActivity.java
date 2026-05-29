@@ -36,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateModeBtn() {
         if (gameView.isAiMode()) {
-            btnToggleMode.setText("🤖  vs Máy");
+            btnToggleMode.setText("Đấu với Máy");
         } else {
-            btnToggleMode.setText("👥  2 Người");
+            btnToggleMode.setText("Đấu với Người");
         }
     }
 }
